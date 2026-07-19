@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, ArrowDownRight, ArrowUpRight, BadgeCheck, Clock3, ExternalLink, Globe2, Minus, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react'
+import { ArrowLeft, ArrowDownRight, ArrowUpRight, BadgeCheck, Clock3, ExternalLink, Globe2, Minus, ShieldCheck, Sparkles, TrendingUp, CalendarPlus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -112,11 +113,64 @@ function formatInitialDate() {
   return 'Loading event time…'
 }
 
+function getFredSeriesForSlug(slug?: string) {
+  switch (slug) {
+    case 'cpi-release':
+      return { seriesId: 'CPIAUCSL', label: 'Consumer Price Index', unit: '' }
+    case 'gdp-release':
+      return { seriesId: 'GDP', label: 'Gross Domestic Product', unit: '' }
+    case 'jobs-report-non-farm-payrolls':
+      return { seriesId: 'UNRATE', label: 'Unemployment Rate', unit: '%' }
+    default:
+      return null
+  }
+}
+
+function parseFredRange(range: '1yr' | '5yr' | '10yr') {
+  const end = new Date()
+  const start = new Date(end)
+
+  if (range === '1yr') {
+    start.setUTCFullYear(end.getUTCFullYear() - 1)
+  } else if (range === '5yr') {
+    start.setUTCFullYear(end.getUTCFullYear() - 5)
+  } else {
+    start.setUTCFullYear(end.getUTCFullYear() - 10)
+  }
+
+  const formatDate = (date: Date) => {
+    const y = date.getUTCFullYear()
+    const m = String(date.getUTCMonth() + 1).padStart(2, '0')
+    const d = String(date.getUTCDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+
+  return {
+    start: formatDate(start),
+    end: formatDate(end),
+  }
+}
+
+function mapFredResponse(observations: Array<{ date: string; value: string }>) {
+  return observations
+    .filter((row) => row.value !== '.' && row.value !== '')
+    .map((row) => ({
+      label: row.date,
+      value: Number(row.value),
+    }))
+    .filter((row) => !Number.isNaN(row.value))
+}
+
 export default function EventDetailPage({ data, slug = 'events' }: EventDetailPageProps) {
   const [mounted, setMounted] = useState(false)
   const [countdown, setCountdown] = useState<ReturnType<typeof getCountdownParts> | null>(null)
   const [displayDate, setDisplayDate] = useState(() => formatInitialDate())
   const [range, setRange] = useState<'1yr' | '5yr' | '10yr'>('5yr')
+  const [chartSeries, setChartSeries] = useState<Array<{ label: string; value: number }>>([])
+  const [chartLoading, setChartLoading] = useState(false)
+  const [chartError, setChartError] = useState<string | null>(null)
+
+  const fredSeries = useMemo(() => getFredSeriesForSlug(slug), [slug])
 
   useEffect(() => {
     setMounted(true)
@@ -134,6 +188,47 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
 
     return () => window.clearInterval(timer)
   }, [data.event_date_utc])
+
+  useEffect(() => {
+    if (!fredSeries) {
+      setChartSeries([])
+      setChartLoading(false)
+      setChartError(null)
+      return
+    }
+
+    const controller = new AbortController()
+    const { start, end } = parseFredRange(range)
+    const params = new URLSearchParams({
+      series: fredSeries.seriesId,
+      range,
+      start,
+      end,
+    })
+
+    setChartLoading(true)
+    setChartError(null)
+
+    fetch(`/api/fred?${params.toString()}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) {
+          const payload = await res.json().catch(() => ({}))
+          throw new Error(payload?.error || res.statusText)
+        }
+        return res.json()
+      })
+      .then((payload) => {
+        setChartSeries(Array.isArray(payload.data) ? payload.data : [])
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          setChartError(error.message || 'Unable to load historical data')
+        }
+      })
+      .finally(() => setChartLoading(false))
+
+    return () => controller.abort()
+  }, [fredSeries, range])
 
   const impactLayers = useMemo(() => {
     if (data.impact_layers && data.impact_layers.length > 0) {
@@ -163,13 +258,11 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
     ].filter((layer) => layer.summary.length > 0)
   }, [data.impact_layer, data.impact_layers])
 
-  const chartSeries = data.historical_data?.[range] ?? []
-
   const chartData = useMemo(() => ({
     labels: chartSeries.map((point) => point.label),
     datasets: [
       {
-        label: 'Value',
+        label: fredSeries?.label ?? 'Value',
         data: chartSeries.map((point) => point.value),
         borderColor: '#2563eb',
         backgroundColor: 'rgba(37, 99, 235, 0.16)',
@@ -178,7 +271,7 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
         pointRadius: 3,
       },
     ],
-  }), [chartSeries])
+  }), [chartSeries, fredSeries])
 
   const chartOptions = useMemo(() => ({
     responsive: true,
@@ -190,11 +283,14 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
     scales: {
       y: {
         ticks: {
-          callback: (value: string | number) => `${value}%`,
+          callback: (value: string | number) => {
+            const unit = fredSeries?.unit ?? ''
+            return unit ? `${value}${unit}` : String(value)
+          },
         },
       },
     },
-  }), [])
+  }), [fredSeries])
 
   const impactStyle = data.impact_level ? impactStyles[data.impact_level] : undefined
   const schema = {
@@ -308,6 +404,41 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
                       ))}
                     </div>
                   )}
+                  <div className="mt-3 flex items-center gap-3">
+                    <Button size="sm" onClick={() => {
+                      try {
+                        const dtstart = new Date(data.event_date_utc!)
+                        const dtend = new Date(dtstart.getTime() + 60 * 60 * 1000) // default 1 hour
+
+                        const formatICS = (d: Date) => {
+                          const pad = (n: number) => String(n).padStart(2, '0')
+                          return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`
+                        }
+
+                        const uid = `finvents-${data.id || slug}-${Date.now()}@finvents`
+                        const summary = (data.event_name || 'Event')
+                        const description = (data.description_long || data.description || '').replace(/\r?\n/g, '\\n')
+                        const url = data.source_url || ''
+
+                        const ics = [`BEGIN:VCALENDAR`, `VERSION:2.0`, `PRODID:-//Finvents//EN`, `CALSCALE:GREGORIAN`, `BEGIN:VEVENT`, `UID:${uid}`, `DTSTAMP:${formatICS(new Date())}`, `DTSTART:${formatICS(dtstart)}`, `DTEND:${formatICS(dtend)}`, `SUMMARY:${summary}`, `DESCRIPTION:${description}${url ? `\\n\\nSource: ${url}` : ''}`, url ? `URL:${url}` : ``, `END:VEVENT`, `END:VCALENDAR`].filter(Boolean).join('\r\n')
+
+                        const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' })
+                        const href = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = href
+                        a.download = `${(summary).replace(/[^a-z0-9-_]/gi, '_')}.ics`
+                        document.body.appendChild(a)
+                        a.click()
+                        document.body.removeChild(a)
+                        URL.revokeObjectURL(href)
+                      } catch (err) {
+                        // silent
+                      }
+                    }}>
+                      <CalendarPlus aria-hidden="true" className="mr-2" />
+                      Add to calendar
+                    </Button>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -398,7 +529,7 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
             </section>
           ) : null}
 
-          {chartSeries.length > 0 ? (
+          {fredSeries ? (
             <section className="flex flex-col gap-6">
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
@@ -427,7 +558,15 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
                   <div className="rounded-full bg-secondary px-3 py-1 text-sm text-muted-foreground">{range}</div>
                 </div>
                 <div className="h-72">
-                  <Line data={chartData} options={chartOptions} />
+                  {chartLoading ? (
+                    <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Loading historical data…</div>
+                  ) : chartError ? (
+                    <div className="flex h-full items-center justify-center text-sm text-red-600">{chartError}</div>
+                  ) : chartSeries.length > 0 ? (
+                    <Line data={chartData} options={chartOptions} />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No historical data is currently available for this series.</div>
+                  )}
                 </div>
               </div>
             </section>
