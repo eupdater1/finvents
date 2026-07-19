@@ -7,7 +7,7 @@ const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 
 export const metadata: Metadata = {
-  title: { default: 'Atlas Calendar — Global Finance Events', template: '%s | Atlas Calendar' },
+  title: { default: 'Finvents — Global Finance Events', template: '%s | Finvents' },
   description: 'A source-verified global calendar for central bank decisions, tax deadlines, economic data releases, crypto events, and market dates.',
   generator: 'v0.app',
 }

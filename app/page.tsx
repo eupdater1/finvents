@@ -46,7 +46,7 @@ export default function Page() {
         </section>
 
         <section id="methodology" className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:px-6 md:py-24 lg:grid-cols-[0.8fr_1.2fr]">
-          <div><p className="text-xs font-semibold uppercase tracking-wider text-primary">How Atlas works</p><h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight">Useful data starts with a reliable source.</h2><p className="mt-5 text-lg leading-relaxed text-muted-foreground">We prioritize official institutions, label uncertainty, and explain each event without jargon or prediction.</p></div>
+          <div><p className="text-xs font-semibold uppercase tracking-wider text-primary">How Finvents works</p><h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight">Useful data starts with a reliable source.</h2><p className="mt-5 text-lg leading-relaxed text-muted-foreground">We prioritize official institutions, label uncertainty, and explain each event without jargon or prediction.</p></div>
           <div className="grid gap-8 md:grid-cols-3">{[
             [SearchCheck,'01','Collect','Dates are gathered from central banks, tax agencies, statistical offices, exchanges, and official project channels.'],
             [ShieldCheck,'02','Verify','Our team checks schedules against primary sources and records when each entry was last reviewed.'],

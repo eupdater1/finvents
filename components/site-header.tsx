@@ -6,11 +6,11 @@ export function SiteHeader() {
   return (
     <header className="border-b bg-background">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2 font-sans font-semibold tracking-tight" aria-label="Atlas Calendar home">
+        <Link href="/" className="flex items-center gap-2 font-sans font-semibold tracking-tight" aria-label="Finvents home">
           <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <CalendarDays aria-hidden="true" />
           </span>
-          <span>Atlas Calendar</span>
+          <span>Finvents</span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex" aria-label="Primary navigation">
           <Link href="/#week" className="text-muted-foreground transition-colors hover:text-foreground">Calendar</Link>
