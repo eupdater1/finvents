@@ -1,0 +1,42 @@
+{
+  "id": "us-cpi-2026-08",
+  "country": "United States",
+  "country_code": "US",
+  "category": "economic_indicator",
+  "pillar": "inflation",
+  "event_name": "CPI Release",
+  "event_date": "2026-08-12",
+  "event_date_utc": "2026-08-12T12:30:00Z",
+  "recurrence": "monthly",
+  "status": "confirmed",
+  "impact_level": "medium",
+  "source_url": "https://www.bls.gov/schedule/2026/08_sched.htm",
+  "source_name": "U.S. Bureau of Labor Statistics",
+  "last_verified": "2026-07-19",
+  "forecast_value": null,
+  "forecast_source": null,
+  "actual_value": null,
+  "actual_value_status": "pending",
+  "revision_history": [],
+  "recap_published": false,
+  "recap_summary": "",
+  "recap_published_date": null,
+  "impact_layer": {
+    "if_higher_than_expected": "A higher-than-expected CPI reading typically signals inflation is running hotter than anticipated, which can lead the Federal Reserve to hold or raise interest rates rather than cut them, and often causes stock and bond prices to fall as investors adjust expectations.",
+    "if_lower_than_expected": "A lower-than-expected CPI reading suggests inflation is cooling, which historically increases the likelihood of the Federal Reserve cutting or holding rates steady, and tends to be viewed positively by stock markets.",
+    "if_in_line": "When CPI matches expectations, markets typically see limited immediate reaction since the outcome was already priced in by investors and analysts."
+  },
+  "life_category_impact": {
+    "mortgage_holders": "Higher inflation readings can push mortgage rates up, since lenders demand higher returns to offset the eroding value of money over time.",
+    "savers": "Persistently high inflation erodes the real value of money sitting in savings accounts unless interest rates rise to compensate.",
+    "investors": "CPI surprises are among the most closely watched data points for stock and bond market volatility, as they shape expectations for future Fed policy.",
+    "small_businesses": "",
+    "students": "",
+    "retirees": ""
+  },
+  "historical_data_5yr": [],
+  "related_events": [],
+  "description_short": "",
+  "description_long": "The Consumer Price Index (CPI) report measures how much the average cost of goods and services has changed for U.S. consumers over the past month. It's the government's primary tool for tracking inflation, covering everything from groceries and gas to rent and healthcare. The Bureau of Labor Statistics releases this data monthly, and it directly influences Federal Reserve interest rate decisions.",
+  "impact_layers": []
+}

@@ -1,0 +1,10 @@
+Event generation summary:
+- generated: cpi-release-2026-08.json -> created app/events/cpi-release/page.tsx
+- generated: federal-tax-filing-deadline-2026.json -> created app/events/federal-tax-filing-deadline/page.tsx
+- generated: fomc-meeting-2026-09.json -> created app/events/fomc-interest-rate-decision-fomc-meeting-2026-09/page.tsx
+- generated: fomc-meeting-2026-12.json -> created app/events/fomc-interest-rate-decision-fomc-meeting-2026-12/page.tsx
+- generated: fred-consumer-price-index-release.json -> created app/events/consumer-price-index-release/page.tsx
+- generated: fred-gross-domestic-product-release.json -> created app/events/gross-domestic-product-release/page.tsx
+- generated: fred-unemployment-rate-release.json -> created app/events/unemployment-rate-release/page.tsx
+- generated: gdp-release-2026-07.json -> created app/events/gdp-release/page.tsx
+- generated: jobs-report-2026-08.json -> created app/events/jobs-report-non-farm-payrolls/page.tsx

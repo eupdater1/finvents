@@ -2,22 +2,26 @@ import Link from 'next/link'
 import { ArrowRight, CalendarPlus, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export const events = [
-  { day: '21', dow: 'MON', time: '09:00', region: 'EU', type: 'Economic Data', title: 'Eurozone Consumer Confidence', detail: 'Preliminary · July', impact: 'Medium' },
-  { day: '22', dow: 'TUE', time: '14:00', region: 'US', type: 'Central Bank', title: 'Federal Reserve Rate Decision', detail: 'Target rate · Jul 2026', impact: 'High', href: '/events/fed-rate-decision' },
-  { day: '23', dow: 'WED', time: '06:00', region: 'UK', type: 'Tax Deadline', title: 'PAYE Electronic Payment Due', detail: 'Monthly remittance', impact: 'Medium' },
-  { day: '24', dow: 'THU', time: '12:30', region: 'US', type: 'Economic Data', title: 'Initial Jobless Claims', detail: 'Weekly release', impact: 'Medium' },
-  { day: '25', dow: 'FRI', time: '08:00', region: 'JP', type: 'Markets', title: 'Tokyo CPI Release', detail: 'Year over year · July', impact: 'High' },
-]
+export interface EventTableRow {
+  day: string
+  dow: string
+  time: string
+  region: string
+  type: string
+  title: string
+  detail: string
+  impact: string
+  href: string
+}
 
-export function EventList() {
+export function EventList({ events }: { events: EventTableRow[] }) {
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
       <div className="hidden grid-cols-[80px_90px_1fr_100px] border-b bg-secondary px-5 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground md:grid">
         <span>Date</span><span>Time</span><span>Event</span><span>Impact</span>
       </div>
       {events.map((event) => (
-        <Link key={event.title} href={event.href ?? '#'} className="group grid grid-cols-[52px_1fr_auto] items-center gap-3 border-b p-4 last:border-b-0 hover:bg-secondary md:grid-cols-[80px_90px_1fr_100px] md:px-5">
+        <Link key={event.title} href={event.href} className="group grid grid-cols-[52px_1fr_auto] items-center gap-3 border-b p-4 last:border-b-0 hover:bg-secondary md:grid-cols-[80px_90px_1fr_100px] md:px-5">
           <div><span className="block text-2xl font-semibold tabular-nums leading-none">{event.day}</span><span className="text-xs font-medium text-muted-foreground">{event.dow}</span></div>
           <div className="hidden text-sm tabular-nums md:block"><span className="block font-medium">{event.time}</span><span className="text-xs text-muted-foreground">UTC</span></div>
           <div className="min-w-0">
@@ -32,7 +36,7 @@ export function EventList() {
   )
 }
 
-export function CountdownPlaceholder() {
+export function StaticCountdown() {
   return (
     <div className="grid grid-cols-4 gap-2" aria-label="Countdown: 2 days, 14 hours, 32 minutes, 8 seconds">
       {[['02','Days'],['14','Hours'],['32','Min'],['08','Sec']].map(([value,label]) => (
@@ -46,7 +50,7 @@ export function AddToCalendarButton() {
   return <Button size="lg"><CalendarPlus data-icon="inline-start" aria-hidden="true" />Add to calendar</Button>
 }
 
-export function LineChartPlaceholder() {
+export function HistoricalRateChart() {
   return (
     <div className="rounded-xl border bg-card p-4 md:p-6">
       <div className="flex items-start justify-between gap-4"><div><p className="font-semibold">Federal funds target rate</p><p className="text-sm text-muted-foreground">Upper bound · 2021–2026</p></div><div className="text-right"><p className="font-mono text-2xl font-semibold">4.50%</p><p className="text-xs text-muted-foreground">Current</p></div></div>

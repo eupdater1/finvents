@@ -26,6 +26,11 @@ export interface EventDetailData {
   description?: string
   description_long?: string
   impact_level?: 'High' | 'Medium' | 'Low'
+  impact_layer?: {
+    if_higher_than_expected?: string
+    if_lower_than_expected?: string
+    if_in_line?: string
+  }
   impact_layers?: Array<{
     title: string
     direction: 'higher' | 'lower' | 'in-line'
@@ -129,6 +134,34 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
 
     return () => window.clearInterval(timer)
   }, [data.event_date_utc])
+
+  const impactLayers = useMemo(() => {
+    if (data.impact_layers && data.impact_layers.length > 0) {
+      return data.impact_layers
+    }
+
+    if (!data.impact_layer) {
+      return []
+    }
+
+    return [
+      {
+        title: 'Higher than expected',
+        direction: 'higher' as const,
+        summary: data.impact_layer.if_higher_than_expected?.trim() ?? '',
+      },
+      {
+        title: 'Lower than expected',
+        direction: 'lower' as const,
+        summary: data.impact_layer.if_lower_than_expected?.trim() ?? '',
+      },
+      {
+        title: 'In line',
+        direction: 'in-line' as const,
+        summary: data.impact_layer.if_in_line?.trim() ?? '',
+      },
+    ].filter((layer) => layer.summary.length > 0)
+  }, [data.impact_layer, data.impact_layers])
 
   const chartSeries = data.historical_data?.[range] ?? []
 
@@ -266,7 +299,7 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
                       ))}
                     </div>
                   ) : (
-                    <div className="grid grid-cols-4 gap-2" aria-label="Countdown timer placeholder">
+                    <div className="grid grid-cols-4 gap-2" aria-label="Countdown timer">
                       {['Days', 'Hours', 'Min', 'Sec'].map((label) => (
                         <div key={label} className="rounded-lg border bg-secondary p-3 text-center">
                           <span className="block font-mono text-xl font-semibold tabular-nums md:text-2xl">--</span>
@@ -324,14 +357,14 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
             </section>
           ) : null}
 
-          {data.impact_layers && data.impact_layers.length > 0 ? (
+          {impactLayers.length > 0 ? (
             <section className="flex flex-col gap-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-primary">Impact layer</p>
                 <h2 className="mt-2 text-3xl font-semibold tracking-tight">If the outcome is higher, lower, or in line</h2>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
-                {data.impact_layers.map((layer) => {
+                {impactLayers.map((layer) => {
                   const direction = directionStyles[layer.direction]
                   const Icon = direction.icon
                   return (
@@ -417,6 +450,9 @@ export default function EventDetailPage({ data, slug = 'events' }: EventDetailPa
             </section>
           ) : null}
 
+          {/* Internal related events: fall back to events-data-based suggestions */}
+          <RelatedEventsFallback data={data} />
+
           {data.faqs && data.faqs.length > 0 ? (
             <section className="flex flex-col gap-6">
               <div>
@@ -498,5 +534,58 @@ function SiteFooter() {
         Finvents keeps public finance events clear, plain, and easy to follow.
       </div>
     </footer>
+  )
+}
+
+function RelatedEventsFallback({ data }: { data: EventDetailData }) {
+  const [items, setItems] = useState<Array<{ event_name: string; slug: string; id?: string }>>([])
+
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      try {
+        const res = await fetch('/api/events')
+        if (!res.ok) return
+        const json = await res.json()
+        const all: Array<any> = json.events ?? []
+
+        const candidates = all.filter((e) => {
+          if (!e) return false
+          if (e.id && e.id === (data as any).id) return false
+          // prefer same category, otherwise same country
+          if (data.category && e.category === data.category) return true
+          if (data.country && e.country === data.country) return true
+          return false
+        })
+
+        // take up to 3
+        if (!cancelled) setItems(candidates.slice(0, 3))
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [data.category, data.country, data.id])
+
+  if (!items || items.length === 0) return null
+
+  return (
+    <section className="flex flex-col gap-6">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider text-primary">Related events</p>
+        <h2 className="mt-2 text-3xl font-semibold tracking-tight">Other events you may be interested in</h2>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        {items.map((item) => (
+          <Link key={item.slug} href={`/events/${item.slug}`} className="flex items-center justify-between rounded-xl border bg-card p-4 text-sm font-medium text-foreground hover:border-primary">
+            <span>{item.event_name}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }

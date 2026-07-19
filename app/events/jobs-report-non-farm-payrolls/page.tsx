@@ -1,0 +1,48 @@
+import EventDetailPage, { type EventDetailData } from '@/components/event-detail-page'
+
+const eventData: EventDetailData = {
+  "id": "us-jobs-2026-08",
+  "country": "United States",
+  "country_code": "US",
+  "category": "economic_indicator",
+  "pillar": "labor_market",
+  "event_name": "Jobs Report / Non-Farm Payrolls",
+  "event_date": "2026-08-07",
+  "event_date_utc": "2026-08-07T12:30:00Z",
+  "recurrence": "monthly",
+  "status": "confirmed",
+  "impact_level": "medium",
+  "source_url": "https://www.bls.gov/schedule/2026/08_sched.htm",
+  "source_name": "U.S. Bureau of Labor Statistics",
+  "last_verified": "2026-07-19",
+  "forecast_value": null,
+  "forecast_source": null,
+  "actual_value": null,
+  "actual_value_status": "pending",
+  "revision_history": [],
+  "recap_published": false,
+  "recap_summary": "",
+  "recap_published_date": null,
+  "impact_layer": {
+    "if_higher_than_expected": "Stronger-than-expected job growth can signal a resilient economy but may also raise concerns about inflation, potentially influencing the Fed toward holding or raising rates.",
+    "if_lower_than_expected": "Weaker-than-expected job growth can raise concerns about a slowing economy, which historically increases the likelihood of the Fed considering rate cuts to support growth.",
+    "if_in_line": "A jobs report matching expectations typically has a limited immediate market impact, as the outcome was already anticipated."
+  },
+  "life_category_impact": {
+    "mortgage_holders": "",
+    "savers": "",
+    "investors": "The jobs report is one of the most market-moving monthly data releases, often causing significant volatility in stocks and bonds.",
+    "small_businesses": "A tight labor market (low unemployment) often means small businesses face more competition and higher costs when hiring.",
+    "students": "Job market strength directly affects entry-level hiring conditions and wage growth for new graduates.",
+    "retirees": ""
+  },
+  "historical_data_5yr": [],
+  "related_events": [],
+  "description_short": "The August jobs report reveals monthly payroll gains, unemployment, and labor-market momentum, making it one of the most market-sensitive U.S. economic releases.",
+  "description_long": "The monthly jobs report, released by the Bureau of Labor Statistics, measures how many jobs were added or lost in the U.S. economy (excluding farm workers) and reports the national unemployment rate. It's one of the most closely watched economic indicators because it reflects the real-time health of the labor market.",
+  "impact_layers": []
+}
+
+export default function EventPage() {
+  return <EventDetailPage data={eventData} slug="jobs-report-non-farm-payrolls" />
+}

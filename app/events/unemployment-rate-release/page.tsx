@@ -1,0 +1,47 @@
+import EventDetailPage, { type EventDetailData } from '@/components/event-detail-page'
+
+const eventData: EventDetailData = {
+  "id": "unemployment-UNRATE",
+  "event_name": "Unemployment Rate release",
+  "category": "economic_indicator",
+  "status": "estimated",
+  "source_url": "https://fred.stlouisfed.org/series/UNRATE",
+  "event_date": "2026-06-01",
+  "event_date_utc": "2026-06-01T00:00:00Z",
+  "description_short": "Release of Unemployment Rate data from FRED.",
+  "description_long": "The Unemployment Rate release is a key macroeconomic indicator tracked for inflation, labor market, and growth analysis.",
+  "impact_level": "medium",
+  "impact_layer": {
+    "if_higher_than_expected": "",
+    "if_lower_than_expected": "",
+    "if_in_line": ""
+  },
+  "life_category_impact": {
+    "mortgage_holders": "",
+    "savers": "",
+    "investors": "",
+    "small_businesses": "",
+    "students": "",
+    "retirees": ""
+  },
+  "related_events": [],
+  "historical_data_5yr": [],
+  "forecast_value": 4.2,
+  "forecast_source": "FRED",
+  "actual_value": null,
+  "actual_value_status": "pending",
+  "revision_history": [],
+  "recap_published": false,
+  "recap_summary": "",
+  "recap_published_date": null,
+  "source_name": "Federal Reserve Bank of St. Louis",
+  "last_verified": "2026-07-19",
+  "country": "United States",
+  "country_code": "US",
+  "pillar": "labor_market",
+  "recurrence": "monthly"
+}
+
+export default function EventPage() {
+  return <EventDetailPage data={eventData} slug="unemployment-rate-release" />
+}

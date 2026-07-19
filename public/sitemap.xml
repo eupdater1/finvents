@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://finvents.vercel.app/</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/about</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/contact</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/privacy</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/disclaimer</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/cpi-release</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/federal-tax-filing-deadline</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/fomc-interest-rate-decision-fomc-meeting-2026-09</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/fomc-interest-rate-decision-fomc-meeting-2026-12</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/gdp-release</loc>
+  </url>
+  <url>
+    <loc>https://finvents.vercel.app/events/jobs-report-non-farm-payrolls</loc>
+  </url>
+</urlset>

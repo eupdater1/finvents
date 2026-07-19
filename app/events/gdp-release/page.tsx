@@ -1,0 +1,48 @@
+import EventDetailPage, { type EventDetailData } from '@/components/event-detail-page'
+
+const eventData: EventDetailData = {
+  "id": "us-gdp-2026-07",
+  "country": "United States",
+  "country_code": "US",
+  "category": "economic_indicator",
+  "pillar": "growth",
+  "event_name": "GDP Release",
+  "event_date": "2026-07-30",
+  "event_date_utc": "2026-07-30T12:30:00Z",
+  "recurrence": "quarterly",
+  "status": "confirmed",
+  "impact_level": "medium",
+  "source_url": "https://www.bea.gov/news/current-releases",
+  "source_name": "U.S. Bureau of Economic Analysis",
+  "last_verified": "2026-07-19",
+  "forecast_value": null,
+  "forecast_source": null,
+  "actual_value": null,
+  "actual_value_status": "pending",
+  "revision_history": [],
+  "recap_published": false,
+  "recap_summary": "",
+  "recap_published_date": null,
+  "impact_layer": {
+    "if_higher_than_expected": "Stronger-than-expected GDP growth signals a robust economy, which can support corporate earnings and stock prices, but may also raise inflation concerns that influence the Fed toward holding or raising rates.",
+    "if_lower_than_expected": "Weaker-than-expected GDP growth can signal an economic slowdown, which historically increases the likelihood of the Fed considering rate cuts to support growth, though it can also weigh on stock prices due to earnings concerns.",
+    "if_in_line": "A GDP reading matching expectations typically has limited immediate market impact, since it was already factored into asset prices and forecasts."
+  },
+  "life_category_impact": {
+    "mortgage_holders": "",
+    "savers": "",
+    "investors": "GDP growth is one of the broadest indicators of economic health, directly influencing corporate earnings expectations and stock market valuations.",
+    "small_businesses": "Strong GDP growth generally signals healthier consumer spending, which can benefit small businesses reliant on discretionary purchases.",
+    "students": "",
+    "retirees": ""
+  },
+  "historical_data_5yr": [],
+  "related_events": [],
+  "description_short": "",
+  "description_long": "The Gross Domestic Product (GDP) report measures the total value of all goods and services produced in the U.S. economy over a given quarter. Released by the Bureau of Economic Analysis, it's the broadest single measure of economic growth and directly shapes Federal Reserve policy decisions and market expectations.",
+  "impact_layers": []
+}
+
+export default function EventPage() {
+  return <EventDetailPage data={eventData} slug="gdp-release" />
+}
